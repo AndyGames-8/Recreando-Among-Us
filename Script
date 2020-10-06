@@ -1,0 +1,53 @@
+using UnityEngine;
+
+[RequireComponent(typeof(Rigidbody2D))]
+public class PlayerMovement : MonoBehaviour{
+
+	[Header("Stats")]
+  public float speed = 5f;
+  
+  [Header("Component")]
+  private Animator anim;
+  private Rigidbody2D rb2d;
+  private Vector2 movement;
+  private Vector2 direction;
+  
+  private void Start()
+  {
+  	anim = GetComponent<Animator>();
+    rb2d = GetComponent<Rigidbody2D>();
+  }
+  private void Update()
+  {
+  	Move();
+    Rotation();
+  }
+  private void Move()
+  {
+ 		// Si clickeamos el boton izquierdo del mouse O damos Touch en la pantalla ----
+  	if(Input.GetMouseButton(0))
+    {
+    	// Transformamos los pixeles del Mouse a Unidades de Unity ----
+    	movement = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+      
+      // Calculamos la distancia entre el Click o Touch y el player ----
+      direction = new Vector2(movement.x - transform.position.x, movement.y - transform.position.y);
+      direction.Normalize();
+      
+      // Calculamos la velocidad ----
+      Vector2 velocity = direction * speed;
+
+			// Aplicamos la velocidad al Rigidbody2D ----
+      rb2d.velocity = velocity;
+    }else
+    {
+    	// Aplicamos una velocidad en 0 cuando no se clickee nada -----
+    	rb2d.velocity = Vector2.zero;
+    }
+  }
+  private void Rotation()
+  {
+  	// SI direction.x ES MAYOR a 0 ENTONCES 1 SINO -1 ----
+  	transform.localScale = new Vector3(direction.x > 0 ? 1 : -1, transform.localScale.y);
+  }
+}
